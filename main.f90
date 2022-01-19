@@ -78,7 +78,7 @@ program main		! main function
 		seed = -1 * seed
 	end if
 	print *, 'Seed = ', -1 * seed
-	print *, 'Enter the amount of time to run the simulation'
+	print *, 'Enter the amount of time to run the simulation:    (1000)'
 	read *, Nchec
 	if (potnum /= 3) then
 		print *, 'Enter the left limit for sampling data: (-20)'
@@ -120,6 +120,8 @@ print *, 'Ncol = ', Ncol
 
 !	real, dimension(Nwf) :: wz
 	
+!		Open all files for output		!
+
 
 	
 	
