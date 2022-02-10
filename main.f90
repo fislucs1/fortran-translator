@@ -6,9 +6,9 @@
 !   wave equation for several systems, including		!
 !   the H.O., LJ. P., and for H, H2+, and H2				!
 
-program main		! main function
+PROGRAM main		! main function
 	
-	implicit none
+	IMPLICIT NONE
 	
 	! ********************************************************** !
 	!	                 Variable Definitions				   		 !
@@ -32,82 +32,82 @@ program main		! main function
 	! ***************************************************** !
 	
 	
-	double precision :: psips2, ener1, ener0, wz1, vrefav, dev0, bi, deviation, tmcount, dt, rhh, rhh2, crhh, wz
-	integer(kind = 8) :: itot, i, itime, id, ie, ij, iw, potnum, Ndim, Npsips, Nmax, seed, Nchec, ri, mrf, Nwf, Ncol
+	DOUBLE PRECISION :: psips2, ener1, ener0, wz1, vrefav, dev0, bi, deviation, tmcount, dt, rhh, rhh2, crhh, wz
+	INTEGER(KIND = 8) :: itot, i, itime, id, ie, ij, iw, potnum, Ndim, Npsips, Nmax, seed, Nchec, ri, mrf, Nwf, Ncol
 	!!!! FILE (line 34)
 	
 	! *********** USER initialization *************** !
 	
-	call system('clear') ! clear console in terminal
-	print *, '*****************************************************'
-	print *, '*                                                   *'
-	print *, '*           Diffusion Monte Carlo                   *'
-	print *, '*                Simulator                          *'
-	print *, '*                                                   *'
-	print *, 'A.	One-dimensional potentials'
-	print *, '		1. Harmonic Oscillator'
-	print *, '		2. Morse Potential'
-	print *, '-------------------------------'
-	print *, 'B. 	3-dimensional potentials'
-	print *, '		3. Hydrogen atom'
-	print *, '		4. H2+ molecule'
-	print *, '		5. H2 molecule'
-	print *, '-------------------------------'
-	print *, 'Select a potential to simulate:  '
-	read *, potnum
-	if (potnum < 3) then ! (potnum = 2,1,0, etc)
+	CALL system('clear') ! clear console in terminal
+	WRITE (*,*) '*****************************************************'
+	WRITE (*,*) '*                                                   *'
+	WRITE (*,*) '*           Diffusion Monte Carlo                   *'
+	WRITE (*,*) '*                Simulator                          *'
+	WRITE (*,*) '*                                                   *'
+	WRITE (*,*) 'A.	One-dimensional potentials'
+	WRITE (*,*) '		1. Harmonic Oscillator'
+	WRITE (*,*) '		2. Morse Potential'
+	WRITE (*,*) '-------------------------------'
+	WRITE (*,*) 'B. 	3-dimensional potentials'
+	WRITE (*,*) '		3. Hydrogen atom'
+	WRITE (*,*) '		4. H2+ molecule'
+	WRITE (*,*) '		5. H2 molecule'
+	WRITE (*,*) '-------------------------------'
+	WRITE (*,*) 'Select a potential to simulate:  '
+	READ (*,*) potnum
+	IF (potnum < 3) THEN ! (potnum = 2,1,0, etc)
 		Ndim = 1
-	end if
-	if ((potnum > 2) .and. (potnum < 5)) then ! (potnum = 3,4)
+	END IF
+	IF ((potnum > 2) .AND. (potnum < 5)) THEN ! (potnum = 3,4)
 		Ndim = 3
-	end if
-	if (potnum == 5) then ! (potnum = 5)
+	END IF
+	IF (potnum == 5) THEN ! (potnum = 5)
 		Ndim = 6
-	end if
-	print *, 'Number in parenthesis are suggestions'
-	print *, 'Ndim = ', Ndim
-	print *, 'Enter the Number of Replicas: (500)'
-	read *, Npsips
-	print *, 'Replicas = ', Npsips
-	print*, 'Enter the max number of replicas: (2000)'
-	read *, Nmax
-	print *, 'Nmax = ', Nmax
-	print *, 'Enter random number seed: '
-	read *, seed
-	if (seed > 0) then
+	END IF
+	WRITE (*,*) 'Number in parenthesis are suggestions'
+	WRITE (*,*) 'Ndim = ', Ndim
+	WRITE (*,*) 'Enter the Number of Replicas: (500)'
+	READ (*,*) Npsips
+	WRITE (*,*) 'Replicas = ', Npsips
+	WRITE (*,*) 'Enter the max number of replicas: (2000)'
+	READ (*,*) Nmax
+	WRITE (*,*) 'Nmax = ', Nmax
+	WRITE (*,*) 'Enter random number seed: '
+	READ (*,*) seed
+	IF (seed > 0) THEN
 		seed = -1 * seed
-	end if
-	print *, 'Seed = ', -1 * seed
-	print *, 'Enter the amount of time to run the simulation:    (1000)'
-	read *, Nchec
-	if (potnum /= 3) then
-		print *, 'Enter the left limit for sampling data: (-20)'
-		read *, ri
-	else 
+	END IF
+	WRITE (*,*) 'Seed = ', -1 * seed
+	WRITE (*,*) 'Enter the amount of time to run the simulation:    (1000)'
+	READ (*,*) Nchec
+	IF (potnum /= 3) THEN
+		WRITE (*,*) 'Enter the left limit for sampling data: (-20)'
+		READ (*,*) ri
+	ELSE 
 		ri = 0
-	end if
-	print *, 'left = ', ri
-	print *, 'Enter the right limit for sampling data: (20) '
-	read *, mrf
-	print *, 'right = ', mrf
-	print *, 'Enter the number of boxes to sort into: (200)'
-	read *, Nwf
+	END IF
+	WRITE (*,*) 'left = ', ri
+	WRITE (*,*) 'Enter the right limit for sampling data: (20) '
+	READ (*,*) mrf
+	WRITE (*,*) 'right = ', mrf
+	WRITE (*,*) 'Enter the number of boxes to sort into: (200)'
+	READ (*,*) Nwf
 	Ncol = Nchec
-	print *, 'boxes = ', Nwf
-	print *, 'Enter a time step: (.1)'
-	read *, dt
+	WRITE (*,*) 'boxes = ', Nwf
+	WRITE (*,*) 'Enter a time step: (.1)'
+	READ (*,*) dt
 	
-	if ( (potnum < 6) .and. (potnum > 3) ) then ! potnum = 4 e 5
-		print *, 'Enter deviation from R ( H - H distance ) in units of bohr radius: '
-		read *, deviation
-		if (potnum == 4) then 
+	IF ( (potnum < 6) .AND. (potnum > 3) ) THEN ! potnum = 4 e 5
+		WRITE (*,*) 'Enter deviation from R ( H - H distance ) in units of bohr radius: '
+		READ (*,*) deviation
+		IF (potnum == 4) THEN 
 			rhh = rhh2 + deviation
-		end if
-		if (potnum == 5) then
+		END IF
+		IF (potnum == 5) THEN
 			rhh = crhh + deviation
-			print *, 'Using', rhh, 'as hydrogen-hydrogen distance.'
-		end if
-	end if
+			WRITE (*,*) 'Using', rhh, 'as hydrogen-hydrogen distance.'
+		END IF
+	END IF
 	
 
 !      Initialize all arrays with user's entered data        !
