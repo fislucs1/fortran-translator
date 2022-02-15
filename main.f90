@@ -31,10 +31,36 @@ PROGRAM main		! main function
 	!		&& --> AND (C) 
 	! ***************************************************** !
 	
+	! Paramaters
 	
-	DOUBLE PRECISION :: psips2, ener1, ener0, wz1, vrefav, dev0, bi, deviation, tmcount, dt, rhh, rhh2, crhh, wz
-	INTEGER(KIND = 8) :: itot, i, itime, id, ie, ij, iw, potnum, Ndim, Npsips, Nmax, seed, Nchec, ri, mrf, Nwf, Ncol
-	!!!! FILE (line 34)
+	REAL, PARAMETER :: crhh = 1.398
+	REAL, PARAMETER :: Rhh2 = 2.00
+	
+	! POINTERS
+	
+	REAL, DIMENSION(:), ALLOCATABLE :: ener
+	REAL, DIMENSION(:,:), ALLOCATABLE :: psips
+	REAL, DIMENSION(:), ALLOCATABLE :: wz
+	
+	! VARIABLES DECLARATION
+	
+	DOUBLE PRECISION :: ri ! left limit for sampling data 
+	DOUBLE PRECISION :: mrf ! right limit for sampling data
+	DOUBLE PRECISION :: dt ! time step
+	DOUBLE PRECISION :: deviation ! deviation from R 
+	DOUBLE PRECISION :: rhh !  radius
+	! DOUBLE PRECISION :: ener
+	INTEGER :: status, stat
+	INTEGER(KIND = 8) :: potnum ! choose the potential
+	INTEGER(KIND = 8) :: Ndim ! number of dimensions we're working in (replicas)
+	INTEGER(KIND = 8) :: Npsips ! Number of replicas
+	INTEGER(KIND = 8) :: Nmax ! max number of replicas
+	INTEGER(KIND = 8) :: seed ! ramdom number
+	INTEGER(KIND = 8) :: Nchec ! Amount of time to run the simulation
+	INTEGER(KIND = 8) :: Nwf ! number of boxes to sort replicas in
+	INTEGER(KIND = 8) :: Ncol ! number of time steps to run the simulation
+	
+	!!!! FILE (line 34 on montecarlo.c)
 	
 	! *********** USER initialization *************** !
 	
@@ -55,7 +81,7 @@ PROGRAM main		! main function
 	WRITE (*,*) '-------------------------------'
 	WRITE (*,*) 'Select a potential to simulate:  '
 	READ (*,*) potnum
-	IF (potnum < 3) THEN ! (potnum = 2,1,0, etc)
+	IF (potnum < 3) THEN ! (potnum = 2,1)
 		Ndim = 1
 	END IF
 	IF ((potnum > 2) .AND. (potnum < 5)) THEN ! (potnum = 3,4)
@@ -109,19 +135,26 @@ PROGRAM main		! main function
 		END IF
 	END IF
 	
+	ALLOCATE(ener(1:Ncol), stat=status)
+	IF (stat /= 0) THEN
+		WRITE (*,*) "Something went wrong trying to allocate 'ener'"
+		STOP 1
+	END IF
+	
+	ALLOCATE(wz(1:Nwf), stat=status)
+	IF (stat /= 0) THEN
+		WRITE (*,*) "Something went wrong trying to allocate 'wz'"
+		STOP 1
+	END IF
+	
+	ALLOCATE(psips(1:Nmax,1:1+Ndim), stat=status)
+	IF (stat /= 0) THEN
+		WRITE (*,*) "Something went wrong trying to allocate 'psips'"
+		STOP 1
+	END IF
+	
+	
 
-!      Initialize all arrays with user's entered data        !
-
-print *, 'Ncol = ', Ncol
-! 
-!	real, allocatable, dimension(:) :: ener
-!	allocate ( ener(Ncol) )
-!	real, dimension(Nmax, 1 + Ndim) :: psips
-
-!	real, dimension(Nwf) :: wz
-	
-!		Open all files for output		!
-
 
 	
 	
@@ -129,5 +162,5 @@ print *, 'Ncol = ', Ncol
 	
 	
 	
-end program main
+END PROGRAM main
 	
