@@ -49,7 +49,7 @@ PROGRAM main		! main function
 	DOUBLE PRECISION :: dt ! time step
 	DOUBLE PRECISION :: deviation ! deviation from R 
 	DOUBLE PRECISION :: rhh !  radius
-	! DOUBLE PRECISION :: ener
+	DOUBLE PRECISION :: Vref ! reference potential
 	INTEGER :: status, stat
 	INTEGER(KIND = 8) :: potnum ! choose the potential
 	INTEGER(KIND = 8) :: Ndim ! number of dimensions we're working in (replicas)
@@ -153,6 +153,51 @@ PROGRAM main		! main function
 		STOP 1
 	END IF
 	
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	! 
+	! OPEN ALL FILES FOR OUTPUT !
+	! 
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	
+	
+	! OPEN FILES !
+	OPEN(1, FILE = 'Eo.dat')
+	OPEN(2, FILE = 'waveshap.dat')
+	OPEN(3, FILE = 'wavedump.dat')
+	
+	! FORMATING FILES !
+	
+	! Eo.dat !
+	
+	WRITE(1,*) "# Format:"
+	WRITE(1,*) "# columm 1: time dimensionless units"
+	WRITE(1,*) "# psips = ", Npsips, "  seed = ", seed, "  dt = ", dt, "  time = ", Nchec, "  left = ", ri
+	WRITE(1,*) "# right = ", mrf, "  boxes = ", Nwf
+	! CLOSE(1) ! Control
+	
+	!	waveshap.dat !
+	
+	WRITE(2,*) "# Format"
+	WRITE(2,*) "# column 1: position (unitless for H.O, M.P., units of Bohr radius otherwise"
+	WRITE(2,*) "# column 2: R (for hydrogen), in other cases the wave function normalized"
+	WRITE(2,*) "# column 3: r * R (for hydrogen), does NOT occur otherwise"
+	WRITE(2,*) "# Note:  For hydrogen we show the radial wavefunction, all other cases show a distribution"
+	WRITE(2,*) "accross a single axis."
+	WRITE(2,*) "# psips = ", Npsips, "  seed = ", seed, "  dt = ", dt, "  time = ", Nchec, "  left = ", ri
+	WRITE(2,*) "# right = ", mrf, "  boxes = ", Nwf
+	! CLOSE(2) ! Control
+	
+	! wavedump.dat !
+	
+	WRITE(3,*) "# this is a dump of the replica matrix at the end of the simulation."
+	WRITE(3,*) "# x, y, z for all electrons"
+	WRITE(3,*) "# psips = ", Npsips, "  seed = ", seed, "  dt = ", dt, "  time = ", Nchec, "  left = ", ri
+	WRITE(3,*) "# right = ", mrf, "  boxes = ", Nwf
+	
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	Vref = 0.
+	
+	WRITE (*,*) "Psips initialized"
 	
 
 
